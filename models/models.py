@@ -10,4 +10,13 @@ class LogisticRegression():
     def predict(self, features):
         return self.model.predict(features)
 
+class RandomForestClassifier():
+    def __init__(self, n_estimators=100):
+        self.n_estimators = n_estimators
+    def fit(self, features_train, fetal_health_train):
+        from sklearn.ensemble import RandomForestClassifier
+        self.model = RandomForestClassifier(n_estimators=self.n_estimators)
+        self.model.fit(features_train, fetal_health_train)
+    def predict(self, features):
+        return self.model.predict(features)
 
