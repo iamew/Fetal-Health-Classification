@@ -1,0 +1,30 @@
+data <- read.csv("hw4_BMT.csv")
+
+data_survive_65 <- data[data$T1 > 65,]
+data_survive_65$acute_GVHD_before_65 <- ifelse(data_survive_65$TA <= 65 & data_survive_65$TA > 0, 1, 0)
+head(data_survive_65)
+library(survival)
+
+# Fit the Cox proportional hazards model
+cox_model <- coxph(Surv(T1, delta1) ~ acute_GVHD_before_65 + Z1 + Z3 + Z5, data = data_survive_65)
+
+# Print the model summary
+summary(cox_model)
+
+#Problem 3
+#p_value <- summary(cox_model)$coefficients["acute_GVHD_before_65", "Pr(>|z|)"]
+#rounded_p_value <- round(p_value, 2)
+#rounded_p_value
+
+#Problem 4
+# Create a new data frame with the patient's characteristics
+new_data <- data.frame(acute_GVHD_before_65 = 1, Z1 = 35, Z3 = 0, Z5 = 1)
+
+# Use the survfit function to predict the survival probability
+surv_fit <- survfit(cox_model, newdata = new_data)
+
+# Extract the survival probability at 200 days
+predicted_survival_200_days <- summary(surv_fit, times = 200)$surv
+
+# Print the predicted survival probability at 200 days
+predicted_survival_200_days
